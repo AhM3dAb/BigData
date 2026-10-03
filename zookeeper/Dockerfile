@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
 ENV zookeeper_worker_1=zookeeper-1
 ENV zookeeper_worker_2=zookeeper-2
@@ -12,7 +12,6 @@ RUN sed -i -e "s|http://archive.ubuntu.com|http://tn.archive.ubuntu.com|g" /etc/
      curl \
      gnupg \
      procps \
-     python3.11-dev \
      wget \
      #python3-pip \
      #python-is-python3 \
@@ -21,7 +20,14 @@ RUN sed -i -e "s|http://archive.ubuntu.com|http://tn.archive.ubuntu.com|g" /etc/
      curl vim wget nano software-properties-common \
      ssh net-tools ca-certificates iputils-ping telnet gettext  \
      && rm -rf /var/lib/apt/lists/*
-
+# Python 3.11
+RUN add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        python3.11 \
+        python3.11-dev \
+        python3.11-distutils \
+    && rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --install /usr/local/bin/python python /usr/bin/python3.11 1
 RUN update-alternatives --install /usr/local/bin/python3 python3 /usr/bin/python3.11 1
 

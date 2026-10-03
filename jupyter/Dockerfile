@@ -1,5 +1,6 @@
 FROM bigdata-base AS base
 FROM tensorflow/tensorflow:latest-gpu-jupyter
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN sed -i -e "s|http://archive.ubuntu.com|http://jp.archive.ubuntu.com|g" /etc/apt/sources.list \
     && apt-get -qq update  \
@@ -10,6 +11,14 @@ RUN sed -i -e "s|http://archive.ubuntu.com|http://jp.archive.ubuntu.com|g" /etc/
     coreutils \
     libc6-dev \
     && rm -rf /var/lib/apt/lists/*
+# # Python 3.11
+# RUN add-apt-repository ppa:deadsnakes/ppa \
+#     && apt-get update \
+#     && apt-get install -y --no-install-recommends \
+#         python3.11 \
+#         python3.11-dev \
+#         python3.11-distutils \
+#     && rm -rf /var/lib/apt/lists/*
 
 ARG USERNAME=jupyter
 ARG GROUPNAME=jupyter

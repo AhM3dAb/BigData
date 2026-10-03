@@ -1,4 +1,5 @@
-FROM ubuntu:latest
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN sed -i -e "s|http://archive.ubuntu.com|http://tn.archive.ubuntu.com|g" /etc/apt/sources.list \
      && apt-get -qq update  \
@@ -8,7 +9,6 @@ RUN sed -i -e "s|http://archive.ubuntu.com|http://tn.archive.ubuntu.com|g" /etc/
      curl \
      gnupg \
      procps \
-     python3.11-dev \
      wget \
      #python3-pip \
      #python-is-python3 \
@@ -17,6 +17,15 @@ RUN sed -i -e "s|http://archive.ubuntu.com|http://tn.archive.ubuntu.com|g" /etc/
      curl vim wget nano software-properties-common \
      ssh net-tools ca-certificates iputils-ping telnet gettext  \
      && rm -rf /var/lib/apt/lists/*
+
+# Python 3.11
+RUN add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        python3.11 \
+        python3.11-dev \
+        python3.11-distutils \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN update-alternatives --install /usr/local/bin/python python /usr/bin/python3.11 1
 RUN update-alternatives --install /usr/local/bin/python3 python3 /usr/bin/python3.11 1
@@ -39,7 +48,7 @@ USER $USERNAME
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 
 # Kafka
-ARG KAFKA_VERSION=3.6.1
+ARG KAFKA_VERSION=4.3.1
 ARG KAFKA_URL=https://dlcdn.apache.org/kafka/$KAFKA_VERSION/kafka_2.13-$KAFKA_VERSION.tgz
 ENV KAFKA_HOME=/opt/kafka
 RUN set -x \
